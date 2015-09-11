@@ -10,7 +10,13 @@
 
   Chat.prototype.submit = function (event) {
     event.preventDefault();
-    debugger;
+    var inputArea = this.$el.find(".new-message>textarea");
+    var input = inputArea.val();
+    if (input) {
+      var bubble = $("<div>").addClass("current-user-message").text(input);
+      this.$el.find(".current-conversation").append(bubble);
+      inputArea.val("");
+    }
   };
 
   Chat.prototype.bindEvents = function () {
