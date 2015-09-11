@@ -12,7 +12,7 @@ app.get("/", function(req, res){
 
 io.on("connection", function (socket) {
   var username = "User" + Math.floor(Math.random() * 10000);
-  socket.emit("entrance", username);
+  socket.broadcast.emit("entrance", username);
 
   socket.on("send", function (message) {
     socket.broadcast.emit("receive", message);

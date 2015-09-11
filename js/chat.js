@@ -28,11 +28,12 @@
   };
 
   Chat.prototype.addUser = function (username) {
-
+    var userDiv = $("<div>").addClass("conversation").text(username);
+    this.$el.find(".conversations").append(userDiv);
   };
 
   Chat.prototype.removeUser = function (username) {
-    
+
   };
 
   Chat.prototype.bindEvents = function () {
