@@ -35,18 +35,6 @@
       <div class="messages">
 
         <div class="current-conversation">
-          <div class="other-message">
-            First Message
-          </div>
-          <div class="current-user-message">
-            Second Message
-          </div>
-          <div class="other-message">
-            Third Message
-          </div>
-          <div class="current-user-message">
-            Hey!
-          </div>
         </div>
         <br>
 
@@ -66,7 +54,8 @@
       var socket = io();
       var client = new Chat({
         $el: $("#chat-client"),
-        socket: socket
+        socket: socket,
+        io: io
       });
     </script>
   </body>

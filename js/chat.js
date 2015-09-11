@@ -5,7 +5,8 @@
 
   Chat = Messages.Chat = function (options) {
     this.$el = options.$el;
-    this.socket = options.socket
+    this.io = options.io;
+    this.socket = options.socket;
     this.bindEvents();
   };
 
@@ -14,7 +15,7 @@
     var inputArea = this.$el.find(".new-message>textarea");
     var input = inputArea.val();
     if (input) {
-      this.socket.emit("chat message", input);
+      this.socket.emit("send", input);
       var bubble = $("<div>").addClass("current-user-message").text(input);
       this.$el.find(".current-conversation").append(bubble);
       inputArea.val("");
@@ -23,7 +24,7 @@
 
   Chat.prototype.bindEvents = function () {
     this.$el.find(".send-message").click(this.submit.bind(this));
-    this.socket.on('chat message', function(message){
+    this.socket.on("chat message", function(message){
       var bubble = $("<div>").addClass("other-message").text(message);
       this.$el.find(".current-conversation").append(bubble);
     }.bind(this));

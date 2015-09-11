@@ -11,12 +11,12 @@ app.get("/", function(req, res){
 });
 
 io.on("connection", function (socket) {
-  socket.on("chat message", function (message) {
-    io.emit("chat message", message)
+  socket.on("send", function (message) {
+    socket.broadcast.emit("chat message", message);
   });
 
   socket.on("disconnect", function () {
-    console.log("User disconnected");
+    //Disconnect function here.
   });
 });
 
