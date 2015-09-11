@@ -64,23 +64,35 @@
   display: inline-block;
 }
 
-.other-message {
-  background-color: #E5A5F3;
-  float: left;
-}
-
-.current-user-message {
-  background-color: #BBF588;
-  float: right;
-}
-
 .current-user-message, .other-message {
-  border-radius: 30px;
+  border-radius: 20px;
   display: block;
   clear: both;
   padding: 10px;
   margin-bottom: 10px;
   max-width: 90%;
+}
+
+.current-user-message {
+  background: #BBF588;
+  background: -webkit-linear-gradient(#D9FEC3, #B7E490);
+  background: -o-linear-gradient(#D9FEC3, #B7E490);
+  background: -moz-linear-gradient(#D9FEC3, #B7E490);
+  background: linear-gradient(#D9FEC3, #B7E490);
+  float: right;
+  box-shadow: -2px 2px #ccc;
+  border-bottom-right-radius: 0px;
+}
+
+.other-message {
+  background: #E5A5F3;
+  background: -webkit-linear-gradient(#EFC8F9, #BAA1BF);
+  background: -o-linear-gradient(#EFC8F9, #BAA1BF);
+  background: -moz-linear-gradient(#EFC8F9, #BAA1BF);
+  background: linear-gradient(#EFC8F9, #BAA1BF);
+  float: left;
+  box-shadow: 2px 2px #ccc;
+  border-bottom-left-radius: 0px;
 }
 
 .conversation {

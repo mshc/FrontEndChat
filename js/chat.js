@@ -5,7 +5,6 @@
 
   Chat = Messages.Chat = function (options) {
     this.$el = options.$el;
-    this.io = options.io;
     this.socket = options.socket;
     this.bindEvents();
   };
@@ -47,7 +46,11 @@
     var socket = this.socket;
 
     socket.on("receive", function(message){ self.addMessage(message, false); });
-    socket.on("entrance", function (username) { self.addUser(username); });
+    socket.on("entrance", function (username) {
+      self.addUser(username);
+      console.log(socket);
+      socket.emit("addMeToo", socket.username);
+    });
     socket.on("exit", function (username) { self.removeUser(username); });
 
     socket.on("addSelf", function (otherUsername) {
