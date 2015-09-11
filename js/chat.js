@@ -16,17 +16,38 @@
     var input = inputArea.val();
     if (input) {
       this.socket.emit("send", input);
-      var bubble = $("<div>").addClass("current-user-message").text(input);
-      this.$el.find(".current-conversation").append(bubble);
+      this.addMessage(input, true);
       inputArea.val("");
     }
   };
 
+  Chat.prototype.addMessage = function (message, currentUser) {
+    var divClass = currentUser ? "current-user-message" : "other-message";
+    var bubble = $("<div>").addClass(divClass).text(message);
+    this.$el.find(".current-conversation").append(bubble);
+  };
+
+  Chat.prototype.addUser = function (username) {
+
+  };
+
+  Chat.prototype.removeUser = function (username) {
+    
+  };
+
   Chat.prototype.bindEvents = function () {
     this.$el.find(".send-message").click(this.submit.bind(this));
-    this.socket.on("chat message", function(message){
-      var bubble = $("<div>").addClass("other-message").text(message);
-      this.$el.find(".current-conversation").append(bubble);
+
+    this.socket.on("receive", function(message){
+      this.addMessage(message, false);
+    }.bind(this));
+
+    this.socket.on("entrance", function (username) {
+      this.addUser(username);
+    }.bind(this));
+
+    this.socket.on("exit", function (username) {
+      this.removeUser(username);
     }.bind(this));
   };
 
