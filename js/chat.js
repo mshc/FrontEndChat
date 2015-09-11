@@ -33,23 +33,26 @@
   };
 
   Chat.prototype.removeUser = function (username) {
+    this.$el.find(".conversation:contains('" + username + "')").remove();
+  };
 
+  Chat.prototype.availableName = function (username) {
+    return this.$el.find(".conversation:contains('"+username+"')").length === 0;
   };
 
   Chat.prototype.bindEvents = function () {
     this.$el.find(".send-message").click(this.submit.bind(this));
 
-    this.socket.on("receive", function(message){
-      this.addMessage(message, false);
-    }.bind(this));
+    var self = this;
+    var socket = this.socket;
 
-    this.socket.on("entrance", function (username) {
-      this.addUser(username);
-    }.bind(this));
+    socket.on("receive", function(message){ self.addMessage(message, false); });
+    socket.on("entrance", function (username) { self.addUser(username); });
+    socket.on("exit", function (username) { self.removeUser(username); });
 
-    this.socket.on("exit", function (username) {
-      this.removeUser(username);
-    }.bind(this));
+    socket.on("addSelf", function (otherUsername) {
+      if (self.availableName(otherUsername)) { self.addUser(otherUsername); }
+    });
   };
 
 })();
