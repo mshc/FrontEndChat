@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Messages</title>
+    <link rel="stylesheet" href="./css/style.css" charset="utf-8">
+
+    <!-- jQuery -->
+    <script src="./js/jquery-2.1.4.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- Socket.io -->
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+  </head>
+
+  <body>
+    <div id="chat-client">
+
+      <div class="conversations">
+        <div class="search-and-new">
+          <button class="btn btn-default new-conversation">
+            <span class="glyphicon glyphicon-edit"></span>
+          </button>
+          <input class="form-control search-conversations" placeholder="Search...">
+        </div>
+        <div class="all-conversations">
+        </div>
+      </div>
+
+      <div class="messages">
+
+        <div class="current-conversation">
+          <div class="other-message">
+            First Message
+          </div>
+          <div class="current-user-message">
+            Second Message
+          </div>
+          <div class="other-message">
+            Third Message
+          </div>
+          <div class="current-user-message">
+            Hey!
+          </div>
+        </div>
+        <br>
+
+        <div class="new-message">
+          <textarea class="form-control new"
+                    rows="1"
+                    placeholder="Enter a message..."></textarea>
+          <button class="btn btn-primary send-message">Send</button>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

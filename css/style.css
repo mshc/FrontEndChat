@@ -1,0 +1,84 @@
+#content {
+  position: absolute;
+  background-color: #ccc;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.conversations {
+  width: 33vw;
+  height: 100vh;
+  float: left;
+  display: inline-block;
+  background-color: #F5F5F5;
+  box-sizing: border-box;
+  border-right: 2px solid #D5D3D3;
+}
+
+.search-and-new {
+  width: 100%;
+  padding: 5px 20px;
+  border-bottom: 2px solid #D5D3D3;
+}
+
+.form-control.search-conversations {
+  width: calc(100% - 40px);
+  float: right;
+  display: inline-block;
+}
+
+.messages {
+  width: 67vw;
+  min-width: 400px;
+  height: 100vh;
+  float: left;
+  display: inline-block;
+  background-color: #E3E9EB;
+  box-sizing: border-box;
+}
+
+.messages .current-conversation {
+  height: 90vh;
+  width: 100%;
+  padding: 20px;
+  overflow: scroll;
+}
+
+.messages .form-control {
+  width: calc(100% - 60px);
+  float: left;
+}
+
+.new-message {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.new-message .btn {
+  float: right;
+}
+
+.messages .btn {
+  display: inline-block;
+}
+
+.other-message {
+  background-color: #E5A5F3;
+  float: left;
+}
+
+.current-user-message {
+  background-color: #BBF588;
+  float: right;
+}
+
+.current-user-message, .other-message {
+  border-radius: 5px;
+  display: block;
+  clear: both;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 90%;
+}
