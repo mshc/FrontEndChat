@@ -20,6 +20,12 @@
     }
   };
 
+  Chat.prototype.activateConversation = function (event) {
+    event.preventDefault();
+    $(".active-conversation").removeClass("active-conversation");
+    var $convDiv = $(event.currentTarget).addClass("active-conversation");
+  };
+
   Chat.prototype.addMessage = function (message, currentUser) {
     var divClass = currentUser ? "current-user-message" : "other-message";
     var bubble = $("<div>").addClass(divClass).text(message);
@@ -28,8 +34,9 @@
 
   Chat.prototype.addUser = function (username) {
     if (!this.availableName(username)) { return; }
-    var userDiv = $("<div>").addClass("conversation").text(username);
-    this.$el.find(".conversations").append(userDiv);
+    var $userDiv = $("<div>").addClass("conversation").text(username);
+    $userDiv.click(this.activateConversation.bind(this));
+    this.$el.find(".conversations").append($userDiv);
   };
 
   Chat.prototype.removeUser = function (username) {
