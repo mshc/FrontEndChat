@@ -11,7 +11,8 @@ app.get("/", function(req, res){
 });
 
 io.on("connection", function (socket) {
-  var username = "User" + Math.floor(Math.random() * 100000);
+  socket.idNumber = Math.floor(Math.random() * 100000);
+  var username = "User" + socket.idNumber;
   socket.username = username;
   socket.broadcast.emit("entrance", username);
 
@@ -29,7 +30,6 @@ io.on("connection", function (socket) {
   });
 
   socket.on("send", function (message) {
-    console.log(socket.room);
     socket.broadcast.to(socket.room).emit("receive", message);
   });
 
