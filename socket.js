@@ -27,7 +27,6 @@ io.on("connection", function (socket) {
     socket.leave(socket.room);
     socket.room = (room === "default") ? room : parseInt(room) + socket.idNumber;
     socket.join(socket.room);
-    console.log(socket.room);
   });
 
   socket.on("send", function (message) {

@@ -27,6 +27,11 @@
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
     var otherId = $convDiv.text().slice(4);
     this.socket.emit("join", otherId);
+    this.clearCurrConv();
+  };
+
+  Chat.prototype.clearCurrConv = function () {
+    $(".current-conversation").empty();
   };
 
   Chat.prototype.addMessage = function (message, currentUser) {
