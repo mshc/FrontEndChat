@@ -57,7 +57,8 @@
   };
 
   Chat.prototype.addMostRecentMessage = function (message) {
-    // body...
+    var $activeConv = $(".active-conversation");
+    $activeConv.find(".most-recent").text(message);
   };
 
   Chat.prototype.removeUser = function (username) {
