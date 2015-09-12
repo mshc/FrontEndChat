@@ -6,6 +6,7 @@
   Chat = Messages.Chat = function (options) {
     this.$el = options.$el;
     this.socket = options.socket;
+    this.socket.emit("join", "default");
     this.bindEvents();
   };
 
@@ -24,6 +25,7 @@
     event.preventDefault();
     $(".active-conversation").removeClass("active-conversation");
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
+    this.socket.emit("join", "test");
   };
 
   Chat.prototype.addMessage = function (message, currentUser) {

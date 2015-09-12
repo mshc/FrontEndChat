@@ -52,10 +52,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();
-      var client = new Chat({
-        $el: $("#chat-client"),
-        socket: socket
-      });
+      var client = new Chat({ $el: $("#chat-client"), socket: socket });
     </script>
   </body>
 </html>
