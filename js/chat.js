@@ -36,15 +36,24 @@
 
   Chat.prototype.addMessage = function (message, currentUser) {
     var divClass = currentUser ? "current-user-message" : "other-message";
-    var bubble = $("<div>").addClass(divClass).text(message);
+    var bubble = $("<div>").addClass("message").addClass(divClass).text(message);
     this.$el.find(".current-conversation").append(bubble);
+    this.addMostRecentMessage(message);
   };
 
   Chat.prototype.addUser = function (username) {
     if (!this.availableName(username)) { return; }
-    var $userDiv = $("<div>").addClass("conversation").text(username);
-    $userDiv.click(this.activateConversation.bind(this));
-    this.$el.find(".conversations").append($userDiv);
+    var $img = $("<div>").addClass("demo-img");
+    var $mostRecentMessage = $("<div>").addClass("most-recent").text("asdfasdf");
+    var $text = $("<div>").addClass("text").text(username).append($mostRecentMessage);
+    var $convDiv = $("<div>").addClass("conversation").append($img).append($text);
+
+    $convDiv.click(this.activateConversation.bind(this));
+    this.$el.find(".conversations").append($convDiv);
+  };
+
+  Chat.prototype.addMostRecentMessage = function (message) {
+    // body...
   };
 
   Chat.prototype.removeUser = function (username) {
@@ -56,16 +65,14 @@
   };
 
   Chat.prototype.bindEvents = function () {
-    this.$el.find(".send-message").click(this.submit.bind(this));
-
     var self = this;
     var socket = this.socket;
 
+    this.$el.find(".send-message").click(this.submit.bind(this));
     socket.on("receive", function(message){ self.addMessage(message, false); });
     socket.on("entrance", function (username) { self.addUser(username); });
     socket.on("add", function (username) {self.addUser(username); });
     socket.on("exit", function (username) { self.removeUser(username); });
-
   };
 
 })();
