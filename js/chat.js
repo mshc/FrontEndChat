@@ -25,7 +25,7 @@
     event.preventDefault();
     $(".active-conversation").removeClass("active-conversation");
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
-    var otherId = $convDiv.text().slice(4);
+    var otherId = $convDiv.data("id");
     this.socket.emit("join", otherId);
     this.clearCurrConv();
   };
@@ -41,15 +41,19 @@
     this.addMostRecentMessage(message);
   };
 
-  Chat.prototype.addUser = function (username) {
+  Chat.prototype.addUser = function (username, socketId) {
     if (!this.availableName(username)) { return; }
     var $img = $("<div>").addClass("demo-img");
-    var $mostRecentMessage = $("<div>").addClass("most-recent").text("asdfasdf");
-    var $text = $("<div>").addClass("text").text(username).append($mostRecentMessage);
-    var $convDiv = $("<div>").addClass("conversation").append($img).append($text);
+    var $mostRecent = $("<div>").addClass("most-recent");
+    var $text = $("<div>").addClass("text").text(username).append($mostRecent);
+    var $convDiv = $("<div>")
+                    .addClass("conversation")
+                    .attr("data-id", socketId)
+                    .append($img)
+                    .append($text);
 
     $convDiv.click(this.activateConversation.bind(this));
-    this.$el.find(".conversations").append($convDiv);
+    this.$el.find(".all-conversations").append($convDiv);
   };
 
   Chat.prototype.addMostRecentMessage = function (message) {
@@ -69,10 +73,21 @@
     var socket = this.socket;
 
     this.$el.find(".send-message").click(this.submit.bind(this));
-    socket.on("receive", function(message){ self.addMessage(message, false); });
-    socket.on("entrance", function (username) { self.addUser(username); });
-    socket.on("add", function (username) {self.addUser(username); });
-    socket.on("exit", function (username) { self.removeUser(username); });
+    socket.on("receive", function(message){
+      self.addMessage(message, false);
+    });
+
+    socket.on("add", function (username, socketId) {
+      self.addUser(username, socketId);
+    });
+
+    socket.on("exit", function (username) {
+      self.removeUser(username);
+    });
+
+    socket.on("entrance", function (username, socketId) {
+      self.addUser(username, socketId);
+    });
   };
 
 })();

@@ -14,12 +14,12 @@ io.on("connection", function (socket) {
   socket.idNumber = Math.floor(Math.random() * 100000);
   var username = "User" + socket.idNumber;
   socket.username = username;
-  socket.broadcast.emit("entrance", username);
+  socket.broadcast.emit("entrance", username, socket.idNumber);
 
   for (var s in io.sockets.connected) {
-    if (s.id !== socket.id) {
+    if (s !== socket.id) {
       var curr_soc = io.sockets.connected[s];
-      curr_soc.broadcast.emit("add", curr_soc.username);
+      curr_soc.broadcast.emit("add", curr_soc.username, curr_soc.idNumber);
     }
   }
 
