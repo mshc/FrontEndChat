@@ -23,10 +23,11 @@ io.on("connection", function (socket) {
     }
   }
 
-  socket.on("join", function (roomName) {
+  socket.on("join", function (room) {
     socket.leave(socket.room);
-    socket.room = roomName;
-    socket.join(roomName);
+    socket.room = (room === "default") ? room : parseInt(room) + socket.idNumber;
+    socket.join(socket.room);
+    console.log(socket.room);
   });
 
   socket.on("send", function (message) {

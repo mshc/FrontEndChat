@@ -25,7 +25,8 @@
     event.preventDefault();
     $(".active-conversation").removeClass("active-conversation");
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
-    this.socket.emit("join", "test");
+    var otherId = $convDiv.text().slice(4);
+    this.socket.emit("join", otherId);
   };
 
   Chat.prototype.addMessage = function (message, currentUser) {
