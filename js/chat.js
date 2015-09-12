@@ -23,9 +23,12 @@
 
   Chat.prototype.activateConversation = function (event) {
     event.preventDefault();
+    if ($(event.currentTarget).hasClass("active-conversation")) { return; }
+
     $(".active-conversation").removeClass("active-conversation");
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
     var otherId = $convDiv.data("id");
+    
     this.socket.emit("join", otherId);
     this.clearCurrConv();
   };

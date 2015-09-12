@@ -127,6 +127,7 @@
 .conversation .most-recent {
   font-size: 12px;
   color: #999;
+  margin-top: -3px;
 }
 
 .active-conversation, .active-conversation:hover {
