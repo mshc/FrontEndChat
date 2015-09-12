@@ -27,6 +27,7 @@
   };
 
   Chat.prototype.addUser = function (username) {
+    if (!this.availableName(username)) { return; }
     var userDiv = $("<div>").addClass("conversation").text(username);
     this.$el.find(".conversations").append(userDiv);
   };
@@ -46,16 +47,10 @@
     var socket = this.socket;
 
     socket.on("receive", function(message){ self.addMessage(message, false); });
-    socket.on("entrance", function (username) {
-      self.addUser(username);
-      console.log(socket);
-      socket.emit("addMeToo", socket.username);
-    });
+    socket.on("entrance", function (username) { self.addUser(username); });
+    socket.on("add", function (username) {self.addUser(username); });
     socket.on("exit", function (username) { self.removeUser(username); });
 
-    socket.on("addSelf", function (otherUsername) {
-      if (self.availableName(otherUsername)) { self.addUser(otherUsername); }
-    });
   };
 
 })();

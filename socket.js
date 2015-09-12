@@ -14,6 +14,14 @@ io.on("connection", function (socket) {
   var username = "User" + Math.floor(Math.random() * 100000);
   socket.username = username;
   socket.broadcast.emit("entrance", username);
+  
+  for (var s in io.sockets.connected) {
+    if (s.id !== socket.id) {
+      var curr_soc = io.sockets.connected[s];
+      curr_soc.broadcast.emit("add", curr_soc.username);
+    }
+  }
+
 
   socket.on("send", function (message) {
     socket.broadcast.emit("receive", message);
