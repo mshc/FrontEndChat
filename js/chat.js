@@ -44,7 +44,7 @@
   };
 
   Chat.prototype.addUser = function (username, socketId) {
-    if (!this.availableName(username)) { return; }
+    if (!this.availableName(username)) { return; } //Perhaps alert user to choose another name.
     var $img = $("<div>").addClass("demo-img");
     var $mostRecent = $("<div>").addClass("most-recent");
     var $text = $("<div>").addClass("text").text(username).append($mostRecent);
@@ -74,10 +74,18 @@
   Chat.prototype.bindEvents = function () {
     var self = this;
     var socket = this.socket;
+
+    this.$el.find(".conversation").click(this.activateConversation);
     this.$el.find(".new").on("keydown", function (event) {
+      var numChars = self.$el.find(".new").val().length;
+
       if (event.keyCode === 13) {
         event.preventDefault();
         self.submit();
+      } else if (numChars > 0) {
+        //is typing
+      } else if (numChars <= 1 && event.keyCode === 8) {
+        //is no longer typing
       }
     });
 
