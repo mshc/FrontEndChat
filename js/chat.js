@@ -43,15 +43,19 @@
     $(event.currentTarget).find(".message-notification").remove();
     if ($(event.currentTarget).hasClass("active-conversation")) { return; }
 
+
     var currId = $(".active-conversation").data("id");
     $(".active-conversation").removeClass("active-conversation");
 
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
     var otherId = $convDiv.data("id");
 
-    this.socket.emit("join", otherId);
     this.clearCurrConv(currId);
     this.populateRecent(otherId);
+
+    //The demo user doesn't have a socket.
+    if (otherId === 100000) { return; }
+    this.socket.emit("join", otherId);
   };
 
   Chat.prototype.clearCurrConv = function (currId) {
@@ -108,7 +112,7 @@
     var self = this;
     var socket = this.socket;
 
-    this.$el.find(".conversation").click(this.activateConversation);
+    this.$el.find(".conversation").click(this.activateConversation.bind(this));
     this.$el.find(".new").on("keydown", function (event) {
       var numChars = self.$el.find(".new").val().length;
 

@@ -35,16 +35,12 @@ io.on("connection", function (socket) {
 
   socket.on("join", function (room) {
     socket.leave(socket.room);
-    if (room === "default") {
-      socket.room = room;
-    } else {
-      socket.room = parseInt(room) + socket.idNumber;
-    }
+    socket.room = (room === "default") ? room : parseInt(room) + socket.idNumber;
     socket.join(socket.room);
-    console.log(socket.room + ": " + usersIn(socket.room).length);
   });
 
   socket.on("send", function (message) {
+    var otherUser = (usersIn())
     socket.broadcast.to(socket.room).emit("receive", message);
   });
 
