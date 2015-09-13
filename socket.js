@@ -11,15 +11,24 @@ app.get("/", function(req, res){
   res.sendFile(__dirname + "/index.html");
 });
 
+function usersIn(roomName) {
+  var users = [];
+  for (var id in io.sockets.connected) {
+    var index = io.sockets.connected[id].rooms.indexOf(roomName);
+    if (index !== -1) { users.push(io.sockets.connected[id]); }
+  }
+  return users;
+};
+
 io.on("connection", function (socket) {
   socket.idNumber = Math.floor(Math.random() * 100000);
   var username = "User" + socket.idNumber;
   socket.username = username;
   socket.broadcast.emit("entrance", username, socket.idNumber);
 
-  for (var s in io.sockets.connected) {
-    if (s !== socket.id) {
-      var curr_soc = io.sockets.connected[s];
+  for (var id in io.sockets.connected) {
+    if (id !== socket.id) {
+      var curr_soc = io.sockets.connected[id];
       curr_soc.broadcast.emit("add", curr_soc.username, curr_soc.idNumber);
     }
   }
@@ -32,6 +41,7 @@ io.on("connection", function (socket) {
       socket.room = parseInt(room) + socket.idNumber;
     }
     socket.join(socket.room);
+    console.log(socket.room + ": " + usersIn(socket.room).length);
   });
 
   socket.on("send", function (message) {
