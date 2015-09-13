@@ -5,6 +5,7 @@
 
   Chat = Messages.Chat = function (options) {
     this.$el = options.$el;
+    this.conversations = {};
     this.socket = options.socket;
     this.socket.emit("join", "default");
     this.bindEvents();
@@ -23,7 +24,6 @@
 
   Chat.prototype.welcome = function () {
     var self = this;
-
     $(".conversation").eq(0).addClass("active-conversation");
 
     var first = "Welcome! This is a Chat app build with node.js and socket.io.";
@@ -41,15 +41,21 @@
     event.preventDefault();
     if ($(event.currentTarget).hasClass("active-conversation")) { return; }
 
+    var currId = $(".active-conversation").data("id");
     $(".active-conversation").removeClass("active-conversation");
+
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
     var otherId = $convDiv.data("id");
 
     this.socket.emit("join", otherId);
-    this.clearCurrConv();
+    this.clearCurrConv(currId);
+    this.populateRecent(otherId);
   };
 
-  Chat.prototype.clearCurrConv = function () {
+  Chat.prototype.clearCurrConv = function (currId) {
+    this.conversations[currId] = $(".current-conversation")
+                                  .find(".message")
+                                  .slice(-5);
     $(".current-conversation").empty();
   };
 
@@ -77,7 +83,6 @@
 
   Chat.prototype.addMostRecentMessage = function (message) {
     var $activeConv = $(".active-conversation");
-    if (message.length > 73) { message = message.slice(0, 70) + "..."; }
     $activeConv.find(".most-recent").text(message);
   };
 
