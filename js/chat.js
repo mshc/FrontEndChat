@@ -13,16 +13,7 @@
     this.welcome();
   };
 
-  Chat.prototype.submit = function () {
-    var inputArea = this.$el.find(".new-message>textarea");
-    var input = inputArea.val();
-    if (input) {
-      this.socket.emit("send", input);
-      this.addMessage(input, true);
-      inputArea.val("");
-    }
-  };
-
+  //For demo purposes.
   Chat.prototype.welcome = function () {
     var self = this;
     $(".conversation").eq(0).addClass("active-conversation");
@@ -38,33 +29,45 @@
     setTimeout(function () { self.addMessage(fourth); }, 7000);
   };
 
+  //For switching between conversations.
   Chat.prototype.activateConversation = function (event) {
     event.preventDefault();
-    $(event.currentTarget).find(".message-notification").remove();
-    if ($(event.currentTarget).hasClass("active-conversation")) { return; }
+    var $newActive = $(event.currentTarget);
 
+    //Remove notification if present and return if already active.
+    $newActive.find(".message-notification").remove();
+    if ($newActive.hasClass("active-conversation")) { return; }
 
-    var currId = $(".active-conversation").data("id");
+    //Deactivate the currently active conversation.
+    var currActiveId = $(".active-conversation").data("id");
     $(".active-conversation").removeClass("active-conversation");
 
-    var $convDiv = $(event.currentTarget).addClass("active-conversation");
-    var otherId = $convDiv.data("id");
+    //Activate the current target and get it's id.
+    $newActive.addClass("active-conversation");
+    var newActiveId = $newActive.data("id");
 
-    this.clearCurrConv(currId);
-    this.populateRecent(otherId);
+    //Clear the current conversation and reload the last few messages of the
+    //new active conversation.
+    this.clearConversation(currActiveId);
+    this.populateRecent(newActiveId);
 
     //The demo user doesn't have a socket.
-    if (otherId === 100000) { return; }
-    this.socket.emit("join", otherId);
+    if (newActiveId === 100000) { return; }
+
+    //If this is not the demo user, emet a join.
+    this.socket.emit("join", newActiveId);
   };
 
-  Chat.prototype.clearCurrConv = function (currId) {
+  //Remove conversation bubbles from the conversation area and store the last
+  //few (specified by this.messagesToKeep).
+  Chat.prototype.clearConversation = function (currActiveId) {
     this.conversations[currId] = $(".current-conversation")
                                   .find(".message")
                                   .slice(-this.messagesToKeep);
     $(".current-conversation").empty();
   };
 
+  //Loads the last (this.messagesToKeep) messages from the active conversation.
   Chat.prototype.populateRecent = function (convId) {
     if (this.conversations[convId]) {
       $.each(this.conversations[convId], function (index, messageDiv) {
@@ -73,6 +76,19 @@
     }
   };
 
+  //When enter is pressed in the textarea.
+  Chat.prototype.submit = function () {
+    var inputArea = this.$el.find(".new-message>textarea");
+    var input = inputArea.val();
+    if (input) {
+      this.socket.emit("send", input);
+      this.addMessage(input, true);
+      inputArea.val("");
+    }
+  };
+
+  //Adds a message to the current conversation and styles it based on whether it
+  //was submitted by the current user or not.
   Chat.prototype.addMessage = function (message, currentUser) {
     var divClass = currentUser ? "current-user-message" : "other-message";
     var bubble = $("<div>").addClass("message").addClass(divClass).text(message);
@@ -80,6 +96,14 @@
     this.addMostRecentMessage(message);
   };
 
+  //Displays the most recent message on the left side of the screen in the
+  //corresponding conversation.
+  Chat.prototype.addMostRecentMessage = function (message) {
+    var $activeConv = $(".active-conversation");
+    $activeConv.find(".most-recent").text(message);
+  };
+
+  //Adds a new user to the list of conversations when a new user joins.
   Chat.prototype.addUser = function (username, socketId) {
     if (!this.availableName(username)) { return; } //Perhaps alert user to choose another name.
     var $img = $("<div>").addClass("demo-img");
@@ -95,19 +119,17 @@
     this.$el.find(".all-conversations").append($convDiv);
   };
 
-  Chat.prototype.addMostRecentMessage = function (message) {
-    var $activeConv = $(".active-conversation");
-    $activeConv.find(".most-recent").text(message);
-  };
-
+  //Called when a user leaves the app.
   Chat.prototype.removeUser = function (username) {
     this.$el.find(".conversation:contains('" + username + "')").remove();
   };
 
+  //So that users cannot have overlapping names.
   Chat.prototype.availableName = function (username) {
     return this.$el.find(".conversation:contains('"+username+"')").length === 0;
   };
 
+  //Add event handlers and socket events.
   Chat.prototype.bindEvents = function () {
     var self = this;
     var socket = this.socket;
