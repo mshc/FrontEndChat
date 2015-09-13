@@ -8,6 +8,7 @@
     this.socket = options.socket;
     this.socket.emit("join", "default");
     this.bindEvents();
+    this.welcome();
   };
 
   Chat.prototype.submit = function () {
@@ -18,6 +19,22 @@
       this.addMessage(input, true);
       inputArea.val("");
     }
+  };
+
+  Chat.prototype.welcome = function () {
+    var self = this;
+
+    $(".conversation").eq(0).addClass("active-conversation");
+
+    var first = "Welcome! This is a Chat app build with node.js and socket.io.";
+    var second = "Start typing to send a message to everyone in the main chat room, or click a user to the left for a private chat!";
+    var third = "If nobody is online, try opening another tab or two to test the app.";
+    var fourth = "Check the code out at github.com/mpiercy827/FrontEndChat!";
+
+    setTimeout(function () { self.addMessage(first); }, 1000);
+    setTimeout(function () { self.addMessage(second); }, 3000);
+    setTimeout(function () { self.addMessage(third); }, 5000);
+    setTimeout(function () { self.addMessage(fourth); }, 7000);
   };
 
   Chat.prototype.activateConversation = function (event) {
@@ -60,6 +77,7 @@
 
   Chat.prototype.addMostRecentMessage = function (message) {
     var $activeConv = $(".active-conversation");
+    if (message.length > 73) { message = message.slice(0, 70) + "..."; }
     $activeConv.find(".most-recent").text(message);
   };
 
