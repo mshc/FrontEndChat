@@ -111,6 +111,7 @@
   margin-bottom: 5px;
   background-color: blue;
   display: inline-block;
+  position: relative;
 }
 
 .text {
@@ -142,4 +143,14 @@
   background: -moz-linear-gradient(#D0D6E2, #BDC5D4);
   background: linear-gradient(#D0D6E2, #BDC5D4);
   border-bottom: 1px solid #B0B7C8;
+}
+
+.message-notification {
+  width: 10px;
+  height: 10px;
+  background-color: #990000;
+  border-radius: 50%;
+  position: relative;
+  bottom: 50px;
+  left: 35px;
 }

@@ -6,6 +6,7 @@
   Chat = Messages.Chat = function (options) {
     this.$el = options.$el;
     this.conversations = {};
+    this.messagesToKeep = 5;
     this.socket = options.socket;
     this.socket.emit("join", "default");
     this.bindEvents();
@@ -55,7 +56,7 @@
   Chat.prototype.clearCurrConv = function (currId) {
     this.conversations[currId] = $(".current-conversation")
                                   .find(".message")
-                                  .slice(-5);
+                                  .slice(-this.messagesToKeep);
     $(".current-conversation").empty();
   };
 
