@@ -10,8 +10,7 @@
     this.bindEvents();
   };
 
-  Chat.prototype.submit = function (event) {
-    event.preventDefault();
+  Chat.prototype.submit = function () {
     var inputArea = this.$el.find(".new-message>textarea");
     var input = inputArea.val();
     if (input) {
@@ -28,7 +27,7 @@
     $(".active-conversation").removeClass("active-conversation");
     var $convDiv = $(event.currentTarget).addClass("active-conversation");
     var otherId = $convDiv.data("id");
-    
+
     this.socket.emit("join", otherId);
     this.clearCurrConv();
   };
@@ -75,8 +74,13 @@
   Chat.prototype.bindEvents = function () {
     var self = this;
     var socket = this.socket;
+    this.$el.find(".new").on("keydown", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        self.submit();
+      }
+    });
 
-    this.$el.find(".send-message").click(this.submit.bind(this));
     socket.on("receive", function(message){
       self.addMessage(message, false);
     });

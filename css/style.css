@@ -46,8 +46,8 @@
   overflow: scroll;
 }
 
-.messages .form-control {
-  width: calc(100% - 60px);
+.messages .new{
+  width: 100%;
   float: left;
 }
 
@@ -71,6 +71,7 @@
   padding: 10px;
   margin-bottom: 10px;
   max-width: 90%;
+  word-wrap: break-word;
 }
 
 .current-user-message {
