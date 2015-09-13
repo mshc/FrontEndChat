@@ -59,6 +59,14 @@
     $(".current-conversation").empty();
   };
 
+  Chat.prototype.populateRecent = function (convId) {
+    if (this.conversations[convId]) {
+      $.each(this.conversations[convId], function (index, messageDiv) {
+        $(".current-conversation").append(messageDiv);
+      });
+    }
+  };
+
   Chat.prototype.addMessage = function (message, currentUser) {
     var divClass = currentUser ? "current-user-message" : "other-message";
     var bubble = $("<div>").addClass("message").addClass(divClass).text(message);
