@@ -40,6 +40,7 @@
 
   Chat.prototype.activateConversation = function (event) {
     event.preventDefault();
+    $(event.currentTarget).find(".message-notification").remove();
     if ($(event.currentTarget).hasClass("active-conversation")) { return; }
 
     var currId = $(".active-conversation").data("id");
