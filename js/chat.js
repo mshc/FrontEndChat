@@ -134,14 +134,20 @@
 
   //Adds a new user to the list of conversations when a new user joins.
   Chat.prototype.addUser = function (username, socketId) {
-    if (!this.availableName(username)) { return; } //Perhaps alert user to choose another name.
-    var $img = $("<div>").addClass("demo-img");
+    if (!this.availableName(username)) { return; }
+
+    //Random images for users.
+    var $img = $("<img>")
+                .attr("src", "http://lorempixel.com/40/40/animals/" + socketId % 10);
+    var $imgDiv = $("<div>").addClass("demo-img").append($img);
+
     var $mostRecent = $("<div>").addClass("most-recent");
     var $text = $("<div>").addClass("text").text(username).append($mostRecent);
+
     var $convDiv = $("<div>")
                     .addClass("conversation")
                     .attr("data-id", socketId)
-                    .append($img)
+                    .append($imgDiv)
                     .append($text);
 
     $convDiv.click(this.activateConversation.bind(this));
