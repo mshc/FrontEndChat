@@ -101,7 +101,7 @@
     var $typingDiv = $("<div>")
                       .addClass("other-message")
                       .addClass("is-typing")
-                      .text("Typing...");
+                      .text("...typing...");
     $(".current-conversation").append($typingDiv);
   };
 
