@@ -23,10 +23,8 @@
     var third = "If nobody is online, try opening another tab or two to test the app.";
     var fourth = "Check the code out at github.com/mpiercy827/FrontEndChat!";
 
-    setTimeout(function () { self.addMessage(first); }, 1000);
-    setTimeout(function () { self.addMessage(second); }, 3000);
-    setTimeout(function () { self.addMessage(third); }, 5000);
-    setTimeout(function () { self.addMessage(fourth); }, 7000);
+    setTimeout(function () { self.addMessage(first + " " + second); }, 1000);
+    setTimeout(function () { self.addMessage(third + " " + fourth); }, 2000);
   };
 
   //For switching between conversations.
@@ -92,8 +90,32 @@
   Chat.prototype.addMessage = function (message, currentUser) {
     var divClass = currentUser ? "current-user-message" : "other-message";
     var bubble = $("<div>").addClass("message").addClass(divClass).text(message);
+    this.removeTyping();
     this.$el.find(".current-conversation").append(bubble);
     this.addMostRecentMessage(message);
+  };
+
+  //Lets the user know that the other user in the current conversation is typing
+  Chat.prototype.addTypingDiv = function () {
+    if ($(".is-typing").length >= 1) { return; }
+    var $typingDiv = $("<div>")
+                      .addClass("other-message")
+                      .addClass("is-typing")
+                      .text("Typing...");
+    $(".current-conversation").append($typingDiv);
+  };
+
+  //Lets the user know that a user in a different conversation is typing to them.
+  Chat.prototype.addTypingText = function (otherUserId) {
+    var $conv = $(".conversation").filter(function (index, conv) {
+      return $(conv).data("id") === otherUserId;
+    });
+
+    $conv.find(".most-recent").text("Typing...");
+  };
+
+  Chat.prototype.removeTyping = function () {
+    $(".is-typing").remove();
   };
 
   //Stores the message in the most recent messages for this conversation.
@@ -171,15 +193,16 @@
 
     this.$el.find(".conversation").click(this.activateConversation.bind(this));
     this.$el.find(".new").on("keydown", function (event) {
-      var numChars = self.$el.find(".new").val().length;
+      var numChars = self.$el.find(".new").val().length; //Include most recent character
+      var activeId = $(".active-conversation").data("id");
 
       if (event.keyCode === 13) {
         event.preventDefault();
         self.submit();
-      } else if (numChars > 0) {
-        //is typing
-      } else if (numChars <= 1 && event.keyCode === 8) {
-        //is no longer typing
+      } else if (numChars <= 1 && (event.keyCode === 8 || event.keyCode === 46)) {
+        socket.emit("not-typing", activeId);
+      } else if (numChars + 1 > 0) {
+        socket.emit("is-typing", activeId);
       }
     });
 
@@ -189,6 +212,16 @@
 
     socket.on("add", function (username, socketId) {
       self.addUser(username, socketId);
+    });
+
+    socket.on("add-typing-div", self.addTypingDiv.bind(self));
+
+    socket.on("add-typing-text", function (otherId) {
+      self.addTypingText(otherId);
+    });
+
+    socket.on("remove-typing", function (otherId) {
+      self.removeTyping(otherId);
     });
 
     socket.on("exit", function (username) {

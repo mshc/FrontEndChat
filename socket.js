@@ -3,14 +3,6 @@ var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 
-app.use("/css", express.static(__dirname + "/css"));
-app.use("/js", express.static(__dirname + "/js"));
-app.use("/images", express.static(__dirname + "/images"));
-
-app.get("/", function(req, res){
-  res.sendFile(__dirname + "/index.html");
-});
-
 function usersIn(roomName) {
   var users = [];
   for (var id in io.sockets.connected) {
@@ -19,6 +11,14 @@ function usersIn(roomName) {
   }
   return users;
 };
+
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/images", express.static(__dirname + "/images"));
+
+app.get("/", function(req, res){
+  res.sendFile(__dirname + "/index.html");
+});
 
 io.on("connection", function (socket) {
   socket.idNumber = Math.floor(Math.random() * 100000);
@@ -38,6 +38,28 @@ io.on("connection", function (socket) {
     socket.join(socket.room);
   });
 
+  socket.on("is-typing", function (notifyId) {
+    var userCount = usersIn(socket.room).length;
+
+    for (var id in io.sockets.connected) {
+      var curr_soc = io.sockets.connected[id];
+      if (curr_soc.idNumber === notifyId && userCount === 2) {
+        curr_soc.emit("add-typing-div");
+      } else if (curr_soc.idNumber === notifyId && userCount === 1) {
+        curr_soc.emit("add-typing-text", socket.idNumber);
+      }
+    }
+  });
+
+  socket.on("not-typing", function (notifyId) {
+    for (var id in io.sockets.connected) {
+      var curr_soc = io.sockets.connected[id];
+      if (curr_soc.idNumber === notifyId) {
+        curr_soc.emit("remove-typing", socket.idNumber);
+      }
+    }
+  });
+
   socket.on("send", function (message) {
     var userCount = (usersIn(socket.room).length);
     if (userCount === 2) {
@@ -45,8 +67,9 @@ io.on("connection", function (socket) {
     } else {
       var otherSocketId = socket.room - socket.idNumber;
       for (var id in io.sockets.connected) {
-        if (io.sockets.connected[id].idNumber === otherSocketId) {
-          io.sockets.connected[id].emit("notification", message, socket.idNumber);
+        var curr_soc = io.sockets.connected[id];
+        if (curr_soc.idNumber === otherSocketId) {
+          curr_soc.emit("notification", message, socket.idNumber);
         }
       }
     }
