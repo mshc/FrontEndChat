@@ -96,6 +96,16 @@
     this.addMostRecentMessage(message);
   };
 
+  //Stores the message in the most recent messages for this conversation.
+  Chat.prototype.storeMessage = function (convId, $messageDiv) {
+    if (!this.conversations[convId]) {
+      this.conversations[convId] = [];
+    } else if (this.conversations[convId].length === this.messagesToKeep) {
+       this.conversations[convId].shift();
+    }
+    this.conversations[convId].push($messageDiv);
+  };
+
   //Displays the most recent message on the left side of the screen in the
   //corresponding conversation.
   Chat.prototype.addMostRecentMessage = function (message) {
@@ -108,15 +118,7 @@
   //the store for that conversation.
   Chat.prototype.createNotification = function (message, otherSocketId) {
     var $message = $("<div>").addClass("other-message").text(message);
-
-    //Stores the message in the most recent messages for this conversation.
-    if (!this.conversations[otherSocketId]) {
-      this.conversations[otherSocketId] = [];
-    }
-    else if (this.conversations[otherSocketId].length === this.messagesToKeep) {
-       this.conversations[otherSocketId].shift();
-    }
-    this.conversations[otherSocketId].push($message);
+    this.storeMessage(otherSocketId, $message);
 
     var $conv = $(".conversation").filter(function (i, conversation) {
       return $(conversation).data("id") === otherSocketId;
