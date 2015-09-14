@@ -22,9 +22,8 @@ function usersIn(roomName) {
 
 io.on("connection", function (socket) {
   socket.idNumber = Math.floor(Math.random() * 100000);
-  var username = "User" + socket.idNumber;
-  socket.username = username;
-  socket.broadcast.emit("entrance", username, socket.idNumber);
+  socket.username = "User" + socket.idNumber;
+  socket.broadcast.emit("entrance", socket.username, socket.idNumber);
 
   for (var id in io.sockets.connected) {
     if (id !== socket.id) {
@@ -40,12 +39,21 @@ io.on("connection", function (socket) {
   });
 
   socket.on("send", function (message) {
-    var otherUser = (usersIn())
-    socket.broadcast.to(socket.room).emit("receive", message);
+    var userCount = (usersIn(socket.room).length);
+    if (userCount === 2) {
+      socket.broadcast.to(socket.room).emit("receive", message);
+    } else {
+      var otherSocketId = socket.room - socket.idNumber;
+      for (var id in io.sockets.connected) {
+        if (io.sockets.connected[id].idNumber === otherSocketId) {
+          io.sockets.connected[id].emit("notification", message, socket.idNumber);
+        }
+      }
+    }
   });
 
   socket.on("disconnect", function () {
-    socket.broadcast.emit("exit", username);
+    socket.broadcast.emit("exit", socket.username);
   });
 });
 

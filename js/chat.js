@@ -61,7 +61,7 @@
   //Remove conversation bubbles from the conversation area and store the last
   //few (specified by this.messagesToKeep).
   Chat.prototype.clearConversation = function (currActiveId) {
-    this.conversations[currId] = $(".current-conversation")
+    this.conversations[currActiveId] = $(".current-conversation")
                                   .find(".message")
                                   .slice(-this.messagesToKeep);
     $(".current-conversation").empty();
@@ -101,6 +101,33 @@
   Chat.prototype.addMostRecentMessage = function (message) {
     var $activeConv = $(".active-conversation");
     $activeConv.find(".most-recent").text(message);
+  };
+
+  //If the receiving user is not in the chat room where another user is sending
+  //them a message, this will give them a notification and put the messages in
+  //the store for that conversation.
+  Chat.prototype.createNotification = function (message, otherSocketId) {
+    var $message = $("<div>").addClass("other-message").text(message);
+
+    //Stores the message in the most recent messages for this conversation.
+    if (!this.conversations[otherSocketId]) {
+      this.conversations[otherSocketId] = [];
+    }
+    else if (this.conversations[otherSocketId].length === this.messagesToKeep) {
+       this.conversations[otherSocketId].shift();
+    }
+    this.conversations[otherSocketId].push($message);
+
+    var $conv = $(".conversation").filter(function (i, conversation) {
+      return $(conversation).data("id") === otherSocketId;
+    });
+
+    //Adds notification if not already present.
+    if ($conv.find(".message-notification").length === 0) {
+      $conv.append($("<div>").addClass("message-notification"));
+    }
+
+    $conv.find(".most-recent").text(message);
   };
 
   //Adds a new user to the list of conversations when a new user joins.
@@ -162,6 +189,10 @@
 
     socket.on("entrance", function (username, socketId) {
       self.addUser(username, socketId);
+    });
+
+    socket.on("notification", function(message, otherSocketId) {
+      self.createNotification(message, otherSocketId);
     });
   };
 
