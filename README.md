@@ -1,4 +1,4 @@
-* FrontEndChat
+# FrontEndChat
 
 This is a chat application inspired by Apple's Messages, built with Node.js and Socket.io.
 It provides users with the following features:

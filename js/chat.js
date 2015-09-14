@@ -120,7 +120,7 @@
     $(".is-typing").remove();
     var mostRecentText;
 
-    if (this.conversations[convId]) {
+    if (convId && this.conversations[convId]) {
       var len = this.conversations[convId].length - 1;
       mostRecentText = this.conversations[convId][len].text();
     } else {
