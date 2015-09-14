@@ -114,8 +114,22 @@
     $conv.find(".most-recent").text("Typing...");
   };
 
-  Chat.prototype.removeTyping = function () {
+  //If a user is typing and clears their textarea, this updates the user they are
+  //typing to.
+  Chat.prototype.removeTyping = function (convId) {
     $(".is-typing").remove();
+    var mostRecentText;
+
+    if (this.conversations[convId]) {
+      var len = this.conversations[convId].length - 1;
+      mostRecentText = this.conversations[convId][len].text();
+    } else {
+      mostRecentText = "";
+    }
+
+    $(".conversation").filter(function (index, conv) {
+      return $(conv).data("id") === convId;
+    }).find(".most-recent").text(mostRecentText);
   };
 
   //Stores the message in the most recent messages for this conversation.
